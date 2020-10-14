@@ -51,6 +51,12 @@
     <ClInclude Include="extra_definition.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GoBackNRdtSender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GoBackNRdtReceiver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +69,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="StopWaitRdtSender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GoBackNRdtSender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GoBackNRdtReceiver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -142,6 +142,8 @@
     <ClInclude Include="DataStructure.h" />
     <ClInclude Include="extra_definition.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="GoBackNRdtReceiver.h" />
+    <ClInclude Include="GoBackNRdtSender.h" />
     <ClInclude Include="NetworkService.h" />
     <ClInclude Include="RandomEventEnum.h" />
     <ClInclude Include="RdtReceiver.h" />
@@ -153,6 +155,8 @@
     <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GoBackNRdtReceiver.cpp" />
+    <ClCompile Include="GoBackNRdtSender.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="StopWait.cpp" />
     <ClCompile Include="StopWaitRdtReceiver.cpp" />

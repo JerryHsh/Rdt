@@ -31,7 +31,6 @@ void StopWaitRdtReceiver::receive(const Packet &packet) {
 		Message msg;
 		memcpy(msg.data, packet.payload, sizeof(packet.payload));
 		pns->delivertoAppLayer(RECEIVER, msg);
-
 		lastAckPkt.acknum = packet.seqnum; //确认序号等于收到的报文序号
 		lastAckPkt.checksum = pUtils->calculateCheckSum(lastAckPkt);
 		pUtils->printPacket("接收方发送确认报文", lastAckPkt);

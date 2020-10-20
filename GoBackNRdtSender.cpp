@@ -9,7 +9,7 @@ bool GoBackNRdtSender::send(const Message &message)
         return false;
 
     //make the packet
-    this->current_packet.acknum = -1;//ignore acknum
+    this->current_packet.acknum = -1; //ignore acknum
     this->current_packet.seqnum = this->nextseqnum;
     memcpy(this->current_packet.payload, message.data, sizeof(message.data));
     this->current_packet.checksum = pUtils->calculateCheckSum(this->current_packet);
@@ -52,7 +52,7 @@ void GoBackNRdtSender::receive(const Packet &ackpkt)
             }
             pns->stopTimer(SENDER, this->timer_seqnum);
             this->timer_seqnum = this->base;
-            pns->startTimer(SENDER, Configuration::TIME_OUT, this->base);
+            pns->startTimer(SENDER, Configuration::TIME_OUT, this->timer_seqnum);
         }
     }
 }
@@ -71,4 +71,8 @@ void GoBackNRdtSender::timeoutHandler(int seqnum)
 bool GoBackNRdtSender::getWaitingState()
 {
     return this->waitingState;
+}
+
+GoBackNRdtSender::~GoBackNRdtSender()
+{
 }

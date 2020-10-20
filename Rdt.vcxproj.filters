@@ -57,6 +57,12 @@
     <ClInclude Include="GoBackNRdtReceiver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SelectiveRepeatSender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectiveRepeatReceiver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +81,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GoBackNRdtReceiver.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectiveRepeatSender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectiveRepeatReceiver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

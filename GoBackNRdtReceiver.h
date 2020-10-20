@@ -8,6 +8,6 @@ private:
 
 public:
     GoBackNRdtReceiver();
-    ~GoBackNRdtReceiver();
+    virtual ~GoBackNRdtReceiver();
     void receive(const Packet &packet);
 };

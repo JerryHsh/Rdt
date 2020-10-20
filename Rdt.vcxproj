@@ -148,6 +148,8 @@
     <ClInclude Include="RandomEventEnum.h" />
     <ClInclude Include="RdtReceiver.h" />
     <ClInclude Include="RdtSender.h" />
+    <ClInclude Include="SelectiveRepeatReceiver.h" />
+    <ClInclude Include="SelectiveRepeatSender.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StopWaitRdtReceiver.h" />
     <ClInclude Include="StopWaitRdtSender.h" />
@@ -157,6 +159,8 @@
   <ItemGroup>
     <ClCompile Include="GoBackNRdtReceiver.cpp" />
     <ClCompile Include="GoBackNRdtSender.cpp" />
+    <ClCompile Include="SelectiveRepeatReceiver.cpp" />
+    <ClCompile Include="SelectiveRepeatSender.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="StopWait.cpp" />
     <ClCompile Include="StopWaitRdtReceiver.cpp" />

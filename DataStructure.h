@@ -1,6 +1,9 @@
 ﻿#ifndef DATA_STRUCTURE_H
 #define DATA_STRUCTURE_H
 
+//何叔恒增加
+#include<list>
+
 struct  Configuration{
 
 	/**

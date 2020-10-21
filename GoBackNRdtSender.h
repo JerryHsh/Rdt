@@ -7,8 +7,9 @@ private:
     int base;       //current window start point
     int nextseqnum; //current sending point
     int timer_seqnum;
-	bool waitingState;				// 是否处于window full的状态
-    const int N = 4; //window's size
+    bool waitingState; // 是否处于window full的状态
+    const int N = 4;   //window's size
+    const int Q = 8;   //the quantity of seq num(3bit)
     Packet current_packet;
     //Packet *send_packet = new Packet[N];//存储已经发出但没有确认的数据包
     list<Packet> store_packet;
@@ -19,6 +20,6 @@ public:
     void timeoutHandler(int seqNum);    //Timeout handler，将被NetworkService调用
     bool getWaitingState();             //返回RdtSender是否处于等待状态，如果发送方正等待确认或者发送窗口已满，返回true
 public:
-    GoBackNRdtSender() : base(1), nextseqnum(1), timer_seqnum(1),waitingState(false){}
+    GoBackNRdtSender() : base(1), nextseqnum(1), timer_seqnum(1), waitingState(false) {}
     virtual ~GoBackNRdtSender();
 };

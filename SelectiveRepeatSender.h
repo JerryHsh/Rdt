@@ -6,7 +6,7 @@ private:
     int base;              //当前窗口第一个元素序号
     int next_seqnum;       //当前窗口下一个将要发送的元素序号
     bool waitingState;     // 是否处于window full的状态
-    const int N = 16;      //window's size
+    const int N = 4;      //window's size
     Packet current_packet; //当前发送的分组
     //Packet *send_packet = new Packet[N];//存储已经发出但没有确认的数据包
     list<Packet> store_packet;

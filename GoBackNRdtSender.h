@@ -8,7 +8,7 @@ private:
     int nextseqnum; //current sending point
     int timer_seqnum;
 	bool waitingState;				// 是否处于window full的状态
-    const int N = 16; //window's size
+    const int N = 4; //window's size
     Packet current_packet;
     //Packet *send_packet = new Packet[N];//存储已经发出但没有确认的数据包
     list<Packet> store_packet;

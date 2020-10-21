@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Circulate.h" />
     <ClInclude Include="DataStructure.h" />
     <ClInclude Include="extra_definition.h" />
     <ClInclude Include="Global.h" />
@@ -154,17 +155,22 @@
     <ClInclude Include="StopWaitRdtReceiver.h" />
     <ClInclude Include="StopWaitRdtSender.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TcpReceiver.h" />
+    <ClInclude Include="TcpSender.h" />
     <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Circulate.cpp" />
     <ClCompile Include="GoBackNRdtReceiver.cpp" />
     <ClCompile Include="GoBackNRdtSender.cpp" />
     <ClCompile Include="SelectiveRepeatReceiver.cpp" />
     <ClCompile Include="SelectiveRepeatSender.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="StopWait.cpp" />
     <ClCompile Include="StopWaitRdtReceiver.cpp" />
     <ClCompile Include="StopWaitRdtSender.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="TcpReceiver.cpp" />
+    <ClCompile Include="TcpSender.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

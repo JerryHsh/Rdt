@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "Global.h"
 
+# pragma warning (disable:4819)
+
 bool GoBackNRdtSender::send(const Message &message)
 {
     //window is full then refuse data
@@ -16,16 +18,16 @@ bool GoBackNRdtSender::send(const Message &message)
     //store the packet which has been sent but hasn't receive ack
     this->store_packet.push_back(this->current_packet);
     //send the packet
-    pUtils->printPacket("发送方发送报文", this->current_packet);
+    pUtils->printPacket("Sender send datagram", this->current_packet);
     if (this->base == this->nextseqnum)
     {
         this->timer_seqnum = this->current_packet.seqnum;
         pns->startTimer(SENDER, Configuration::TIME_OUT, this->timer_seqnum);
     }
     pns->sendToNetworkLayer(RECEIVER, this->current_packet);
-    this->nextseqnum++;
+    this->nextseqnum = Circulate::add(this->size, this->nextseqnum, 1);
     //judge if window is full
-    if (this->nextseqnum >= this->base + this->N)
+    if (Circulate::judge_over(this->size, this->window_size, this->base, this->nextseqnum))
         this->waitingState = true;
     return true;
 }
@@ -37,22 +39,26 @@ void GoBackNRdtSender::receive(const Packet &ackpkt)
     //若校验和正确 （累计确认）
     if (checkSum == ackpkt.checksum)
     {
-        this->base = ackpkt.seqnum + 1;
-
-        if (this->base == this->nextseqnum)
+        pUtils->printPacket("Sender receive ack successfully", ackpkt);
+        if ((ackpkt.acknum != -1)&&(Circulate::judge_bigger(this->size, this->base, this->nextseqnum, ackpkt.acknum)))
         {
-            this->store_packet.clear();
-            pns->stopTimer(SENDER, this->timer_seqnum);
-        }
-        else
-        {
-            while (this->store_packet.front().seqnum != this->base && !this->store_packet.empty())
+            this->base = Circulate::add(this->size, ackpkt.acknum, 1);
+            this->waitingState = false;
+            if (this->base == this->nextseqnum)
             {
-                this->store_packet.pop_front();
+                this->store_packet.clear();
+                pns->stopTimer(SENDER, this->timer_seqnum);
             }
-            pns->stopTimer(SENDER, this->timer_seqnum);
-            this->timer_seqnum = this->base;
-            pns->startTimer(SENDER, Configuration::TIME_OUT, this->timer_seqnum);
+            else
+            {
+                while (this->store_packet.front().seqnum != this->base && !this->store_packet.empty())
+                {
+                    this->store_packet.pop_front();
+                }
+                pns->stopTimer(SENDER, this->timer_seqnum);
+                this->timer_seqnum = this->base;
+                pns->startTimer(SENDER, Configuration::TIME_OUT, this->timer_seqnum);
+            }
         }
     }
 }
@@ -62,7 +68,7 @@ void GoBackNRdtSender::timeoutHandler(int seqnum)
     pns->stopTimer(SENDER, this->timer_seqnum);
     for (auto pkt : this->store_packet)
     {
-        pUtils->printPacket("发送方定时器时间到，重发上次发送的报文", pkt);
+        pUtils->printPacket("Reach time limit, resent data segment", pkt);
         pns->sendToNetworkLayer(RECEIVER, pkt);
     }
     pns->startTimer(SENDER, Configuration::TIME_OUT, this->timer_seqnum);

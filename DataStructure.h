@@ -4,8 +4,10 @@
 //何叔恒增加
 #include <list>
 #include <vector>
+#include "Circulate.h"
 using std::list;
 using std::vector;
+
 
 struct Configuration
 {

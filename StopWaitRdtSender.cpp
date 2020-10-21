@@ -68,3 +68,4 @@ void StopWaitRdtSender::timeoutHandler(int seqNum) {
 	pns->startTimer(SENDER, Configuration::TIME_OUT,seqNum);			//重新启动发送方定时器
 	pns->sendToNetworkLayer(RECEIVER, this->packetWaitingAck);			//重新发送数据包
 }
+

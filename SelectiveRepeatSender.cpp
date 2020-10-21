@@ -1,6 +1,6 @@
 #include "SelectiveRepeatSender.h"
 #include "Global.h"
-#include "StopWaitRdtSender.h"
+#include "stdafx.h"
 
 SelectiveRepeatSender::~SelectiveRepeatSender()
 {
@@ -8,23 +8,23 @@ SelectiveRepeatSender::~SelectiveRepeatSender()
 
 bool SelectiveRepeatSender::send(const Message &message)
 {
-    if (this->waitingState == false)
+    if (this->waitingState == true)
         return false;
     //make packet
     this->current_packet.acknum = -1; //ignore this
-    this->current_packet.seqnum = this->next_seqnum;
+    this->current_packet.seqnum = this->nextSeqNum;
     memcpy(this->current_packet.payload, message.data, sizeof(message.data));
     this->current_packet.checksum = pUtils->calculateCheckSum(this->current_packet);
     //save the packet until receive it ack
     store_packet.push_back(this->current_packet);
     //send the packet
-    pUtils->printPacket("发送方发送报文", this->current_packet);
+    pUtils->printPacket("Sender send datagram", this->current_packet);
     //start timer of current packet
-    pns->startTimer(SENDER, Configuration::TIME_OUT, this->next_seqnum);
+    pns->startTimer(SENDER, Configuration::TIME_OUT, this->nextSeqNum);
     pns->sendToNetworkLayer(RECEIVER, this->current_packet);
-    this->next_seqnum++;
+    this->nextSeqNum = Circulate::add(this->size, this->nextSeqNum, 1);
     //judge if the window is full
-    if (this->next_seqnum >= this->base + this->N)
+    if (Circulate::judge_over(this->size, this->window_size, this->base, this->nextSeqNum))
         this->waitingState = true;
     return true;
 }
@@ -33,21 +33,24 @@ void SelectiveRepeatSender::receive(const Packet &ackPkt)
 {
     //calculate vertify code
     int chechSum = pUtils->calculateCheckSum(ackPkt);
-    if (chechSum == ackPkt.checksum && ackPkt.seqnum >= this->base)
+    if (chechSum == ackPkt.checksum && Circulate::judge_inner(this->size, this->base, this->nextSeqNum, ackPkt.acknum))
     {
-
-        //stop timer and note user
-        pUtils->printPacket("发送方正确收到确认", ackPkt);
-        pns->stopTimer(SENDER, ackPkt.seqnum);
-        //store ack's seqnum
-        this->ack_pkt_num.push_back(ackPkt.seqnum);
-        //move the window
-        while (checkPktAck(this->base))
+        //note user
+        pUtils->printPacket("Sender succesfully receive ack", ackPkt);
+        if (!checkAckExistence(ackPkt.acknum))
         {
-            this->ack_pkt_num.remove(this->base);
-            this->store_packet.pop_front();
-            this->base++;
-            this->waitingState = false;
+            //stop timer
+            pns->stopTimer(SENDER, ackPkt.acknum);
+            //store ack's seqnum
+            this->ack_list.push_back(ackPkt.acknum);
+            //move the window
+            while (checkAckExistence(this->base))
+            {
+                this->ack_list.remove(this->base);
+                this->store_packet.pop_front();
+                this->base = Circulate::add(this->size, this->base, 1);
+                this->waitingState = false;
+            }
         }
     }
 }
@@ -59,9 +62,11 @@ void SelectiveRepeatSender::timeoutHandler(int seqNum)
         if (pkt.seqnum == seqNum)
         {
             pns->stopTimer(SENDER, seqNum);
-            pUtils->printPacket("发送方定时器时间到，重发上次发送的报文", pkt);
-            pns->sendToNetworkLayer(SENDER, pkt);
+            //send the packet start timer of current packet
+            pUtils->printPacket("Reach the time limit, resend the datagram", pkt);
+            pns->sendToNetworkLayer(RECEIVER, pkt);
             pns->startTimer(SENDER, Configuration::TIME_OUT, seqNum);
+            break;
         }
     }
 }
@@ -71,10 +76,12 @@ bool SelectiveRepeatSender::getWaitingState()
     return this->waitingState;
 }
 
-bool SelectiveRepeatSender::checkPktAck(int seqnum)
+bool SelectiveRepeatSender::checkAckExistence(int ack)
 {
-    for (auto ackSeqNum : this->ack_pkt_num)
-        if (ackSeqNum == seqnum)
+    for (auto i : this->ack_list)
+    {
+        if (i == ack)
             return true;
+    }
     return false;
 }

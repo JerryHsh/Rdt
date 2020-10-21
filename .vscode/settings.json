@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "list": "cpp"
+        "list": "cpp",
+        "memory": "cpp",
+        "system_error": "cpp",
+        "xutility": "cpp"
     }
 }

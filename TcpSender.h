@@ -8,7 +8,8 @@ private:
     bool waitingState;         // 是否处于window full的状态
     const int window_size = 4; //window's size
     const int size = 8;        //quantity of seqnum
-    Packet current_packet;     //当前发送的分组
+    int ackCount = 0;
+    Packet current_packet; //当前发送的分组
     list<Packet> store_packet;
 
 public:

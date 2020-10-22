@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "Global.h"
 
-# pragma warning (disable:4819)
+#pragma warning(disable : 4819)
 
 bool GoBackNRdtSender::send(const Message &message)
 {
@@ -40,7 +40,7 @@ void GoBackNRdtSender::receive(const Packet &ackpkt)
     if (checkSum == ackpkt.checksum)
     {
         pUtils->printPacket("Sender receive ack successfully", ackpkt);
-        if ((ackpkt.acknum != -1)&&(Circulate::judge_bigger(this->size, this->base, this->nextseqnum, ackpkt.acknum)))
+        if ((ackpkt.acknum != -1) && (Circulate::judge_bigger(this->size, this->base, this->nextseqnum, ackpkt.acknum)))
         {
             this->base = Circulate::add(this->size, ackpkt.acknum, 1);
             this->waitingState = false;
@@ -52,9 +52,7 @@ void GoBackNRdtSender::receive(const Packet &ackpkt)
             else
             {
                 while (this->store_packet.front().seqnum != this->base && !this->store_packet.empty())
-                {
                     this->store_packet.pop_front();
-                }
                 pns->stopTimer(SENDER, this->timer_seqnum);
                 this->timer_seqnum = this->base;
                 pns->startTimer(SENDER, Configuration::TIME_OUT, this->timer_seqnum);

@@ -34,26 +34,26 @@ void SelectiveRepeatReceiver::receive(const Packet &packet)
         {
             Message msg;
             
-                this->recvseq_list.push_back(packet.seqnum);
+                this->recvPktSeqList.push_back(packet.seqnum);
 
-                if (store_packet.empty())
+                if (storePacket.empty())
                 {
-                    store_packet.push_back(packet);
+                    storePacket.push_back(packet);
                 }
                 else
                 {
-                    for (auto iter = store_packet.begin();;)
+                    for (auto iter = storePacket.begin();;)
                     {
                         if (Circulate::judge_bigger(this->size, this->recvbase, iter->seqnum, packet.seqnum))
                         {
-                            store_packet.insert(iter, packet);
+                            storePacket.insert(iter, packet);
                             break;
                         }
                         //not completed
                         iter++;
-                        if (iter == store_packet.end())
+                        if (iter == storePacket.end())
                         {
-                            store_packet.insert(iter, packet);
+                            storePacket.insert(iter, packet);
                             break;
                         }
                     }
@@ -61,10 +61,10 @@ void SelectiveRepeatReceiver::receive(const Packet &packet)
             
             while (checkPktReceive(this->recvbase))
             {
-                memcpy(msg.data, this->store_packet.front().payload, sizeof(this->store_packet.front().payload));
+                memcpy(msg.data, this->storePacket.front().payload, sizeof(this->storePacket.front().payload));
                 pns->delivertoAppLayer(RECEIVER, msg);
-                this->store_packet.pop_front();
-                this->recvseq_list.remove(this->recvbase);
+                this->storePacket.pop_front();
+                this->recvPktSeqList.remove(this->recvbase);
                 this->recvbase = Circulate::add(this->size, this->recvbase, 1);
             }
         }
@@ -75,7 +75,7 @@ void SelectiveRepeatReceiver::receive(const Packet &packet)
 
 bool SelectiveRepeatReceiver::checkPktReceive(int seqnum)
 {
-    for (auto recvSeqNum : this->recvseq_list)
+    for (auto recvSeqNum : this->recvPktSeqList)
         if (recvSeqNum == seqnum)
             return true;
     return false;

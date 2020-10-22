@@ -3,8 +3,8 @@
 class SelectiveRepeatReceiver : public RdtReceiver
 {
 private:
-    list<int> recvseq_list;
-    list<Packet> store_packet;
+    list<int> recvPktSeqList;
+    list<Packet> storePacket;
     int recvbase;
     Packet lastAckPkt;
     const int window_size = 4; //window's size

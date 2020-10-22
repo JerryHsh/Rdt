@@ -11,6 +11,8 @@
 #include "GoBackNRdtReceiver.h"
 #include "SelectiveRepeatSender.h"
 #include "SelectiveRepeatReceiver.h"
+#include "TcpSender.h"
+#include "TcpReceiver.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,8 +20,10 @@ int main(int argc, char *argv[])
 	// RdtReceiver* pr = new StopWaitRdtReceiver();
 	// RdtSender *ps = new GoBackNRdtSender();
 	// RdtReceiver *pr = new GoBackNRdtReceiver();
-	RdtSender *ps = new SelectiveRepeatSender();
-	RdtReceiver *pr = new SelectiveRepeatReceiver();
+	// RdtSender *ps = new SelectiveRepeatSender();
+	// RdtReceiver *pr = new SelectiveRepeatReceiver();
+	RdtSender *ps = new TcpSender();
+	RdtReceiver *pr = new TcpReceiver();
 	//	pns->setRunMode(0);  //VERBOS模式
 	pns->setRunMode(1); //安静模式
 	pns->init();

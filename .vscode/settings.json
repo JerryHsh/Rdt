@@ -4,5 +4,6 @@
         "memory": "cpp",
         "system_error": "cpp",
         "xutility": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": true
 }

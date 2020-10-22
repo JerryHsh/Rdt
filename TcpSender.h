@@ -21,4 +21,5 @@ public:
     void receive(const Packet &ackPkt); //接受确认Ack，将被NetworkService调用
     void timeoutHandler(int seqNum);    //Timeout handler，将被NetworkService调用
     bool getWaitingState();
+    bool checkExistence(int seq);   //return true if No.seq packet in store_packet
 };

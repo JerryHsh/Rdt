@@ -14,6 +14,7 @@ bool TcpSender::send(const Message &message)
 	this->current_packet.seqnum = nextSeqNum;
 	this->current_packet.acknum = -1; //ignore this segment
 	memcpy(this->current_packet.payload, message.data, sizeof(message.data));
+	this->current_packet.checksum = pUtils->calculateCheckSum(this->current_packet);
 	//save send packet
 	this->store_packet.push_back(this->current_packet);
 	//start timer
@@ -45,16 +46,21 @@ void TcpSender::receive(const Packet &ackPkt)
 					this->ackCount = 0;
 					pns->stopTimer(SENDER, this->base);
 					pns->sendToNetworkLayer(RECEIVER, this->store_packet.front());
-					pUtils->printPacket("!@Reach time limit,sender resend datagram", this->store_packet.front());
+					pUtils->printPacket("!@Triple ack,sender resend datagram", this->store_packet.front());
 					pns->startTimer(SENDER, Configuration::TIME_OUT, this->base);
 				}
 			}
 			else
 			{
-				while ((this->store_packet.front().seqnum != ackPkt.acknum) && !this->store_packet.empty())
-					this->store_packet.pop_front();
 				pns->stopTimer(SENDER, this->base);
 				this->base = ackPkt.acknum;
+				this->ackCount = 0;
+				while (!this->store_packet.empty())
+				{
+					if (this->store_packet.front().seqnum == this->base)
+						break;
+					this->store_packet.pop_front();
+				}
 				if (!this->store_packet.empty())
 					pns->startTimer(SENDER, Configuration::TIME_OUT, this->base);
 				this->waitingState = false;
@@ -74,4 +80,12 @@ void TcpSender::timeoutHandler(int seqNum)
 bool TcpSender::getWaitingState()
 {
 	return this->waitingState;
+}
+
+bool TcpSender::checkExistence(int seq)
+{
+	for (auto pkt : this->store_packet)
+		if (pkt.seqnum == seq)
+			return true;
+	return false;
 }
